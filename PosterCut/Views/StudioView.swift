@@ -21,6 +21,14 @@ struct StudioView: View {
         viewModel.hasImage ? themeManager.accent(for: viewModel.currentStep) : themeManager.primaryAccent
     }
 
+    private var keyWindowBottomSafeInset: CGFloat {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first(where: { $0.isKeyWindow })?
+            .safeAreaInsets.bottom ?? 0
+    }
+
     var body: some View {
         ZStack {
             AmbientLiquidBackdrop(activeAccent: activeAccent)
@@ -34,25 +42,28 @@ struct StudioView: View {
                 if viewModel.hasImage {
                     GeometryReader { geo in
                         let isSideBySide = geo.size.width >= 760 && geo.size.width > geo.size.height
+                        let rawInset = max(geo.safeAreaInsets.bottom, keyWindowBottomSafeInset)
+                        // Hug right above the white iPhone Home Indicator (16pt on Face ID iPhones, matching WhatsApp)
+                        let dockBottomPad: CGFloat = rawInset > 0 ? max(15, rawInset - 18) : 10
+
                         if isSideBySide {
                             HStack(spacing: 12) {
                                 canvasContainer
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                inspectorContainer
+                                    .padding(.bottom, dockBottomPad)
+                                inspectorContainer(bottomPad: dockBottomPad)
                                     .frame(width: min(390, geo.size.width * 0.42))
                                     .frame(maxHeight: .infinity)
                             }
                             .padding(.horizontal, 14)
-                            .padding(.bottom, 8)
                         } else {
                             VStack(spacing: 6) {
                                 canvasContainer
-                                    .frame(height: max(220, geo.size.height * 0.43))
-                                inspectorContainer
+                                    .frame(height: max(224, geo.size.height * 0.43))
+                                inspectorContainer(bottomPad: dockBottomPad)
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                             }
                             .padding(.horizontal, 12)
-                            .padding(.bottom, 4)
                         }
                     }
                     .transition(.opacity)
@@ -62,6 +73,7 @@ struct StudioView: View {
                         .transition(.opacity)
                 }
             }
+            .ignoresSafeArea(.container, edges: viewModel.hasImage ? .bottom : [])
 
             // Export Progress HUD
             if viewModel.isExporting {
@@ -80,7 +92,7 @@ struct StudioView: View {
                         .padding(.vertical, 10)
                         .liquidGlassCapsule(interactive: false)
                         .shadow(color: .black.opacity(0.18), radius: 10, y: 4)
-                        .padding(.bottom, viewModel.hasImage ? 76 : 24)
+                        .padding(.bottom, viewModel.hasImage ? 64 : 24)
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .allowsHitTesting(false)
@@ -159,13 +171,6 @@ struct StudioView: View {
                         .foregroundStyle(.primary)
                         .lineLimit(1)
                 }
-            } else {
-                // Voice Notes–style Large Bold Title on Home Screen (no duplicate mini icon)
-                Text(verbatim: "PosterCut")
-                    .font(.largeTitle.weight(.bold))
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
             }
 
             Spacer(minLength: 8)
@@ -197,13 +202,14 @@ struct StudioView: View {
                 .accessibilityLabel(L10n.tr("step_export"))
             }
 
+            let gearSize: CGFloat = viewModel.hasImage ? 38 : 42
             Button {
                 showSettings = true
             } label: {
                 Image(systemName: "gearshape.fill")
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.system(size: viewModel.hasImage ? 15 : 17, weight: .semibold))
                     .foregroundStyle(.primary)
-                    .frame(width: 38, height: 38)
+                    .frame(width: gearSize, height: gearSize)
                     .liquidGlassCircle(interactive: true)
             }
             .buttonStyle(.plain)
@@ -214,14 +220,23 @@ struct StudioView: View {
     // MARK: - Welcome Empty State
 
     private var welcomeEmptyState: some View {
-        let isColorful = themeManager.currentTheme == .colorful
-        let filesTint = isColorful ? Color(hex: "#06B6D4") : themeManager.primaryAccent
-        let pasteTint = isColorful ? Color(hex: "#8B5CF6") : themeManager.primaryAccent
-        let urlTint = isColorful ? Color(hex: "#10B981") : themeManager.primaryAccent
+        let swatches = themeManager.currentTheme.swatchColors
+        let primaryTint = swatches[0]
+        let filesTint = swatches[1]
+        let pasteTint = swatches[2]
+        let urlTint = swatches[3]
 
         return ScrollView(showsIndicators: false) {
-            VStack(spacing: 22) {
-                Spacer(minLength: 20)
+            VStack(alignment: .leading, spacing: 20) {
+                // Native iOS / Voice Notes Large Title position right beneath top chrome bar
+                Text(verbatim: "PosterCut")
+                    .font(.largeTitle.weight(.bold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 2)
 
                 VStack(spacing: 16) {
                     PosterMarkView(size: 86)
@@ -252,12 +267,12 @@ struct StudioView: View {
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 15)
-                        .liquidGlassCapsule(tint: themeManager.primaryAccent, interactive: true)
+                        .liquidGlassCapsule(tint: primaryTint, interactive: true)
                     }
                     .buttonStyle(.plain)
                     .padding(.top, 4)
 
-                    // Secondary Quick Sources (crisp lightweight tiles)
+                    // Secondary Quick Sources (crisp lightweight tiles with distinct tonal shades)
                     HStack(spacing: 10) {
                         quickSourceTile(icon: "folder.fill", title: L10n.tr("ios_from_files"), tint: filesTint) {
                             showFileImporter = true
@@ -279,7 +294,7 @@ struct StudioView: View {
                             Text(L10n.tr("btn_try_sample"))
                                 .font(.subheadline.weight(.semibold))
                         }
-                        .foregroundStyle(themeManager.primaryAccent)
+                        .foregroundStyle(filesTint)
                         .padding(.vertical, 6)
                     }
                     .buttonStyle(.plain)
@@ -287,7 +302,9 @@ struct StudioView: View {
                 .padding(24)
                 .frame(maxWidth: 440)
                 .liquidGlassRoundedRect(cornerRadius: 28, interactive: false)
+                .frame(maxWidth: .infinity)
                 .padding(.horizontal, 20)
+                .padding(.top, 10)
 
                 Spacer(minLength: 24)
             }
@@ -448,9 +465,9 @@ struct StudioView: View {
         }
     }
 
-    // MARK: - Inspector Container (Soft Edge-Fade ScrollView + Bottom Native iOS 26 Liquid Glass Bar)
+    // MARK: - Inspector Container (Symmetrical Edge-Fade ScrollView ABOVE Bottom Liquid Glass Bar)
 
-    private var inspectorContainer: some View {
+    private func inspectorContainer(bottomPad: CGFloat) -> some View {
         let stepBinding = Binding<StudioStep>(
             get: { viewModel.currentStep },
             set: { newStep in
@@ -464,8 +481,8 @@ struct StudioView: View {
             }
         )
 
-        return ZStack(alignment: .bottom) {
-            // Scrollable controls with soft top & bottom gradient fade mask
+        return VStack(spacing: 4) {
+            // Scrollable controls dissolve cleanly BEFORE both the Canvas above and the Bottom Bar below
             ScrollView(showsIndicators: false) {
                 StepControlsView(
                     viewModel: viewModel,
@@ -473,8 +490,8 @@ struct StudioView: View {
                     onPickFiles: { showFileImporter = true },
                     onPromptURL: { showURLAlert = true }
                 )
-                .padding(.top, 12)
-                .padding(.bottom, 76)
+                .padding(.top, 10)
+                .padding(.bottom, 16)
             }
             .mask(
                 VStack(spacing: 0) {
@@ -492,12 +509,12 @@ struct StudioView: View {
                         startPoint: .top,
                         endPoint: .bottom
                     )
-                    .frame(height: 54)
+                    .frame(height: 22)
                 }
             )
 
             // Bottom Floating Native iOS 26 Liquid Glass Step Switcher
-            // Uses Apple's native segmented Picker for genuine magnifying Liquid Glass droplet physics
+            // Sits tightly above the Home Indicator (like WhatsApp) with zero content bleeding underneath
             Picker("", selection: stepBinding) {
                 ForEach(StudioStep.allCases) { step in
                     Text(L10n.tr(step.titleKey))
@@ -507,9 +524,9 @@ struct StudioView: View {
             .pickerStyle(.segmented)
             .controlSize(.large)
             .labelsHidden()
-            .shadow(color: Color.black.opacity(0.14), radius: 12, y: 4)
+            .shadow(color: Color.black.opacity(0.14), radius: 10, y: 3)
             .padding(.horizontal, 4)
-            .padding(.bottom, 4)
+            .padding(.bottom, bottomPad)
         }
     }
 

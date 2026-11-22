@@ -219,8 +219,8 @@ struct PosterConfig: Equatable, Sendable {
     var pdfLossless: Bool = true
     var pngDPI: Int = 300
 
-    // Preview toggles
-    var showSilhouette: Bool = true
+    // Preview toggles (cut grid ON by default, human silhouette OFF by default)
+    var showSilhouette: Bool = false
     var silhouetteHeightCM: Double = 180.0
     var showOriginal: Bool = false
     var showGrid: Bool = true

@@ -90,9 +90,9 @@ enum PosterVisualTheme: String, CaseIterable, Identifiable, Sendable {
         case .sapphire: return "#2563EB"
         case .iceCyan: return "#06B6D4"
         case .indigo: return "#4F46E5"
-        case .emerald: return "#0EA571"
-        case .violet: return "#7C3AED"
-        case .rose: return "#E11D74"
+        case .emerald: return "#10B981"
+        case .violet: return "#8B5CF6"
+        case .rose: return "#EC4899"
         case .graphite: return "#64748B"
         }
     }
@@ -100,12 +100,12 @@ enum PosterVisualTheme: String, CaseIterable, Identifiable, Sendable {
     var secondaryHex: String {
         switch self {
         case .colorful: return "#06B6D4"
-        case .sapphire: return "#38BDF8"
-        case .iceCyan: return "#67E8F9"
+        case .sapphire: return "#0EA5E9"
+        case .iceCyan: return "#38BDF8"
         case .indigo: return "#818CF8"
-        case .emerald: return "#34D399"
-        case .violet: return "#C084FC"
-        case .rose: return "#F472B6"
+        case .emerald: return "#2DD4BF"
+        case .violet: return "#D946EF"
+        case .rose: return "#FB7185"
         case .graphite: return "#94A3B8"
         }
     }
@@ -113,27 +113,38 @@ enum PosterVisualTheme: String, CaseIterable, Identifiable, Sendable {
     var primaryAccent: Color { Color(hex: primaryHex) }
     var secondaryGlow: Color { Color(hex: secondaryHex) }
 
-    /// Distinct jewel tones for the 4 studio steps when `colorful` is active (zero orange).
-    func stepAccent(_ step: StudioStep) -> Color {
-        guard self == .colorful else { return primaryAccent }
-        switch step {
-        case .image: return Color(hex: "#2563EB")   // Sapphire Blue
-        case .paper: return Color(hex: "#06B6D4")   // Arctic Cyan
-        case .style: return Color(hex: "#8B5CF6")   // Vivid Violet
-        case .export: return Color(hex: "#10B981")  // Emerald Green
+    /// 4 distinct, harmonious tonal shades per palette (matching Voice Notes' tonal richness — zero orange).
+    /// Index 0 = Imagen, 1 = Papel, 2 = Estilo, 3 = Exportar (also used across Welcome quick tiles & Live Preview).
+    var tonalHexPalette: [String] {
+        switch self {
+        case .colorful:
+            return ["#2563EB", "#06B6D4", "#8B5CF6", "#10B981"]  // Sapphire, Cyan, Violet, Emerald
+        case .sapphire:
+            return ["#2563EB", "#0EA5E9", "#6366F1", "#0284C7"]  // Sapphire, Sky, Cobalt, Deep Ocean
+        case .iceCyan:
+            return ["#06B6D4", "#38BDF8", "#14B8A6", "#0891B2"]  // Arctic Cyan, Glacier Sky, Aqua Teal, Deep Lagoon
+        case .indigo:
+            return ["#4F46E5", "#818CF8", "#7C3AED", "#3B82F6"]  // Royal Indigo, Periwinkle, Electric Violet, Cobalt
+        case .emerald:
+            return ["#10B981", "#2DD4BF", "#4ADE80", "#059669"]  // Emerald, Mint Teal, Fresh Sage, Deep Forest
+        case .violet:
+            return ["#8B5CF6", "#D946EF", "#C084FC", "#6366F1"]  // Vivid Violet, Orchid, Lavender, Deep Amethyst
+        case .rose:
+            return ["#EC4899", "#FB7185", "#F472B6", "#BE185D"]  // Rose Pink, Coral Blush, Pastel Rose, Deep Raspberry
+        case .graphite:
+            return ["#64748B", "#94A3B8", "#71717A", "#475569"]  // Cool Slate, Brushed Titanium, Zinc Pewter, Deep Steel
         }
     }
 
+    /// Distinct tonal shade for each of the 4 studio steps inside EVERY palette (not just Multicolor).
+    func stepAccent(_ step: StudioStep) -> Color {
+        let palette = tonalHexPalette
+        guard !palette.isEmpty else { return primaryAccent }
+        return Color(hex: palette[step.rawValue % palette.count])
+    }
+
     var swatchColors: [Color] {
-        if self == .colorful {
-            return [
-                Color(hex: "#2563EB"),
-                Color(hex: "#06B6D4"),
-                Color(hex: "#8B5CF6"),
-                Color(hex: "#10B981")
-            ]
-        }
-        return [primaryAccent, secondaryGlow, primaryAccent.opacity(0.62), secondaryGlow.opacity(0.50)]
+        tonalHexPalette.map { Color(hex: $0) }
     }
 }
 

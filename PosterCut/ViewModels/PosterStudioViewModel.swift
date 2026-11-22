@@ -75,6 +75,8 @@ final class PosterStudioViewModel: ObservableObject {
         config.flipV = false
         config.crop = .full
         config.excludedTiles.removeAll()
+        config.showSilhouette = false
+        config.showGrid = true
         isCropMode = false
         currentStep = .paper
 
