@@ -1,0 +1,158 @@
+{
+  "features" : [
+    "refractivity",
+    "specular-location"
+  ],
+  "fill-specializations" : [
+    {
+      "value" : {
+        "linear-gradient" : [
+          "display-p3:0.95500,0.97800,1.00000,1.00000",
+          "display-p3:0.85000,0.90500,0.98800,1.00000"
+        ]
+      }
+    },
+    {
+      "appearance" : "dark",
+      "value" : {
+        "linear-gradient" : [
+          "display-p3:0.05200,0.11800,0.23500,1.00000",
+          "display-p3:0.01600,0.03800,0.08800,1.00000"
+        ]
+      }
+    }
+  ],
+  "groups" : [
+    {
+      "blur-material" : 0.40,
+      "layers" : [
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "display-p3:0.07500,0.39000,0.88000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "display-p3:0.14000,0.49000,0.98000,1.00000"
+              }
+            }
+          ],
+          "glass" : true,
+          "image-name" : "tile-tl.svg",
+          "name" : "Tile Top Left Cobalt",
+          "opacity" : 0.94
+        },
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "display-p3:0.02000,0.78500,0.98000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "display-p3:0.12000,0.91000,1.00000,1.00000"
+              }
+            }
+          ],
+          "glass" : true,
+          "image-name" : "tile-tr.svg",
+          "name" : "Tile Top Right Cyan",
+          "opacity" : 0.94
+        },
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "display-p3:0.16500,0.28000,0.82000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "display-p3:0.24500,0.38000,0.95000,1.00000"
+              }
+            }
+          ],
+          "glass" : true,
+          "image-name" : "tile-bl.svg",
+          "name" : "Tile Bottom Left Indigo",
+          "opacity" : 0.95
+        },
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "display-p3:0.35000,0.72000,0.96000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "display-p3:0.54000,0.83500,0.98500,1.00000"
+              }
+            }
+          ],
+          "glass" : true,
+          "image-name" : "tile-br.svg",
+          "name" : "Tile Bottom Right Sky",
+          "opacity" : 0.94
+        },
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "display-p3:0.04000,0.68000,0.95000,1.00000"
+              }
+            },
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "display-p3:0.55000,0.98500,1.00000,1.00000"
+              }
+            }
+          ],
+          "glass" : true,
+          "image-name" : "cut-cross.svg",
+          "name" : "Precision Cut Cross",
+          "opacity" : 0.98
+        }
+      ],
+      "lighting" : "individual",
+      "name" : "Mosaika Poster Tiles",
+      "refractivity" : {
+        "depth" : 0.62,
+        "enabled" : true,
+        "strength" : 0.60
+      },
+      "shadow-specializations" : [
+        {
+          "value" : {
+            "kind" : "neutral",
+            "opacity" : 0.44
+          }
+        },
+        {
+          "appearance" : "light",
+          "value" : {
+            "kind" : "layer-color",
+            "opacity" : 0.38
+          }
+        }
+      ],
+      "specular" : true,
+      "specular-highlight-placement" : "outside",
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.56
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

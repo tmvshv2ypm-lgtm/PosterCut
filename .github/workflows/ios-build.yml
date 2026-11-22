@@ -1,0 +1,46 @@
+name: Build PosterCut iOS (.ipa)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    name: Compile PosterCut on Xcode 27 Runner
+    runs-on: xcode-27
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          if [ -d /Applications/Xcode.app/Contents/Developer ]; then
+            sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          fi
+          xcodebuild -version
+
+      - name: Build PosterCut (Release - iOS Device)
+        run: |
+          xcodebuild clean build \
+            -project PosterCut.xcodeproj \
+            -scheme PosterCut \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package Unsigned .ipa for Sideloading (AltKeeper / SideStore / Sideloadly)
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/PosterCut.app Payload/
+          zip -r PosterCut-Unsigned.ipa Payload
+
+      - name: Upload PosterCut.ipa Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PosterCut-iOS-IPA
+          path: PosterCut-Unsigned.ipa
+          retention-days: 30
