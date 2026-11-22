@@ -45,7 +45,9 @@ enum AppAppearanceMode: String, CaseIterable, Identifiable, Sendable {
 }
 
 /// Subtle Liquid Glass accent palettes preserving native Light/Dark system modes and green switches.
+/// Includes `colorful` (Multicolor Original inspired by Voice Notes, zero orange).
 enum PosterVisualTheme: String, CaseIterable, Identifiable, Sendable {
+    case colorful
     case sapphire
     case iceCyan
     case indigo
@@ -58,6 +60,7 @@ enum PosterVisualTheme: String, CaseIterable, Identifiable, Sendable {
 
     var titleKey: String {
         switch self {
+        case .colorful: return "ios_theme_colorful"
         case .sapphire: return "ios_theme_sapphire"
         case .iceCyan: return "ios_theme_cyan"
         case .indigo: return "ios_theme_indigo"
@@ -68,20 +71,35 @@ enum PosterVisualTheme: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    var subtitleKey: String {
+        switch self {
+        case .colorful: return "ios_theme_colorful_sub"
+        case .sapphire: return "ios_theme_sapphire_sub"
+        case .iceCyan: return "ios_theme_cyan_sub"
+        case .indigo: return "ios_theme_indigo_sub"
+        case .emerald: return "ios_theme_emerald_sub"
+        case .violet: return "ios_theme_violet_sub"
+        case .rose: return "ios_theme_rose_sub"
+        case .graphite: return "ios_theme_graphite_sub"
+        }
+    }
+
     var primaryHex: String {
         switch self {
+        case .colorful: return "#2563EB"
         case .sapphire: return "#2563EB"
         case .iceCyan: return "#06B6D4"
         case .indigo: return "#4F46E5"
         case .emerald: return "#0EA571"
         case .violet: return "#7C3AED"
         case .rose: return "#E11D74"
-        case .graphite: return "#475569"
+        case .graphite: return "#64748B"
         }
     }
 
     var secondaryHex: String {
         switch self {
+        case .colorful: return "#06B6D4"
         case .sapphire: return "#38BDF8"
         case .iceCyan: return "#67E8F9"
         case .indigo: return "#818CF8"
@@ -95,8 +113,27 @@ enum PosterVisualTheme: String, CaseIterable, Identifiable, Sendable {
     var primaryAccent: Color { Color(hex: primaryHex) }
     var secondaryGlow: Color { Color(hex: secondaryHex) }
 
+    /// Distinct jewel tones for the 4 studio steps when `colorful` is active (zero orange).
+    func stepAccent(_ step: StudioStep) -> Color {
+        guard self == .colorful else { return primaryAccent }
+        switch step {
+        case .image: return Color(hex: "#2563EB")   // Sapphire Blue
+        case .paper: return Color(hex: "#06B6D4")   // Arctic Cyan
+        case .style: return Color(hex: "#8B5CF6")   // Vivid Violet
+        case .export: return Color(hex: "#10B981")  // Emerald Green
+        }
+    }
+
     var swatchColors: [Color] {
-        [primaryAccent, secondaryGlow, primaryAccent.opacity(0.55), secondaryGlow.opacity(0.45)]
+        if self == .colorful {
+            return [
+                Color(hex: "#2563EB"),
+                Color(hex: "#06B6D4"),
+                Color(hex: "#8B5CF6"),
+                Color(hex: "#10B981")
+            ]
+        }
+        return [primaryAccent, secondaryGlow, primaryAccent.opacity(0.62), secondaryGlow.opacity(0.50)]
     }
 }
 
@@ -127,7 +164,7 @@ final class PosterThemeManager: ObservableObject {
 
     private init() {
         let savedTheme = UserDefaults.standard.string(forKey: Self.themeKey)
-        self.currentTheme = savedTheme.flatMap(PosterVisualTheme.init(rawValue:)) ?? .sapphire
+        self.currentTheme = savedTheme.flatMap(PosterVisualTheme.init(rawValue:)) ?? .colorful
 
         let savedApp = UserDefaults.standard.string(forKey: Self.appearanceKey)
         self.appearance = savedApp.flatMap(AppAppearanceMode.init(rawValue:)) ?? .system
@@ -140,6 +177,10 @@ final class PosterThemeManager: ObservableObject {
 
     var primaryAccent: Color { currentTheme.primaryAccent }
     var secondaryGlow: Color { currentTheme.secondaryGlow }
+
+    func accent(for step: StudioStep) -> Color {
+        currentTheme.stepAccent(step)
+    }
 }
 
 // MARK: - Native iOS 26 Liquid Glass View Modifiers (with graceful iOS 17/18 fallback)
@@ -257,29 +298,60 @@ extension View {
                 )
         }
     }
+
+    /// Lightweight native iOS card surface for scrolling sections & grid controls (zero live blur shaders -> cool GPU).
+    func studioCardSurface(cornerRadius: CGFloat = 20) -> some View {
+        self.modifier(StudioCardSurfaceModifier(cornerRadius: cornerRadius))
+    }
 }
 
-/// Calm ambient Liquid Glass background glow inspired by Voice Notes.
+private struct StudioCardSurfaceModifier: ViewModifier {
+    let cornerRadius: CGFloat
+    @Environment(\.colorScheme) private var colorScheme
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        content
+            .background(
+                shape.fill(Color(uiColor: .secondarySystemGroupedBackground).opacity(colorScheme == .dark ? 0.90 : 0.95))
+            )
+            .overlay(
+                shape.strokeBorder(
+                    Color.primary.opacity(colorScheme == .dark ? 0.11 : 0.06),
+                    lineWidth: 0.75
+                )
+            )
+    }
+}
+
+/// GPU-friendly ambient Liquid Glass backdrop using RadialGradients (zero live Gaussian blur passes -> cool battery!).
 struct AmbientLiquidBackdrop: View {
+    var activeAccent: Color? = nil
     @ObservedObject private var themeManager = PosterThemeManager.shared
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
+        let primary = activeAccent ?? themeManager.primaryAccent
+        let secondary = themeManager.secondaryGlow
+        let topOpacity = colorScheme == .dark ? 0.16 : 0.10
+        let botOpacity = colorScheme == .dark ? 0.12 : 0.08
+
         ZStack {
             Color(uiColor: .systemGroupedBackground)
-                .ignoresSafeArea()
 
-            Circle()
-                .fill(themeManager.primaryAccent.opacity(colorScheme == .dark ? 0.16 : 0.11))
-                .frame(width: 340, height: 340)
-                .blur(radius: 90)
-                .offset(x: -120, y: -220)
+            RadialGradient(
+                colors: [primary.opacity(topOpacity), .clear],
+                center: UnitPoint(x: 0.18, y: 0.12),
+                startRadius: 10,
+                endRadius: 340
+            )
 
-            Circle()
-                .fill(themeManager.secondaryGlow.opacity(colorScheme == .dark ? 0.14 : 0.09))
-                .frame(width: 300, height: 300)
-                .blur(radius: 85)
-                .offset(x: 130, y: 200)
+            RadialGradient(
+                colors: [secondary.opacity(botOpacity), .clear],
+                center: UnitPoint(x: 0.86, y: 0.82),
+                startRadius: 10,
+                endRadius: 320
+            )
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)

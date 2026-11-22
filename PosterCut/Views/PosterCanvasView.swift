@@ -27,6 +27,20 @@ struct PosterCanvasView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .clipped()
+            .onChange(of: viewModel.config.showSilhouette) { _, _ in
+                withAnimation(.spring(response: 0.34, dampingFraction: 0.84)) {
+                    zoom = 1.0
+                    lastZoom = 1.0
+                    pan = .zero
+                    lastPan = .zero
+                }
+            }
+            .onChange(of: viewModel.sourceName) { _, _ in
+                zoom = 1.0
+                lastZoom = 1.0
+                pan = .zero
+                lastPan = .zero
+            }
         }
     }
 
@@ -36,22 +50,12 @@ struct PosterCanvasView: View {
         let layout = computeCanvasLayout(in: size)
 
         return ZStack {
-            // Subtle architectural blueprint dot grid
-            Canvas { ctx, canvasSize in
-                let dotColor = colorScheme == .dark ? Color.white.opacity(0.08) : Color.black.opacity(0.08)
-                let step: CGFloat = 20
-                var y: CGFloat = 10
-                while y < canvasSize.height {
-                    var x: CGFloat = 10
-                    while x < canvasSize.width {
-                        ctx.fill(Path(CGRect(x: x, y: y, width: 1.5, height: 1.5)), with: .color(dotColor))
-                        x += step
-                    }
-                    y += step
-                }
+            // Cached static architectural blueprint dot grid (zero per-frame dot loops)
+            BlueprintDotGridView(isDark: colorScheme == .dark)
 
-                // Dynamic real-world scale reference behind/beside poster left edge
-                if viewModel.config.showSilhouette, let geom = viewModel.geometry {
+            // Dynamic real-world scale reference behind/beside poster left edge
+            if viewModel.config.showSilhouette, let geom = viewModel.geometry {
+                Canvas { ctx, _ in
                     let silColor = colorScheme == .dark ? Color.white.opacity(0.14) : Color.black.opacity(0.13)
                     let posterHCM = max(geom.posterHMM, geom.gridHMM) / 10.0
                     let pxPerCM = layout.pxPerMM * 10.0
@@ -99,6 +103,8 @@ struct PosterCanvasView: View {
                         )
                     }
                 }
+                .allowsHitTesting(false)
+                .transition(.opacity)
             }
 
             // Poster paper sheet + artwork + cut grid overlay
@@ -132,6 +138,7 @@ struct PosterCanvasView: View {
                         .strokeBorder(Color.black.opacity(0.18), lineWidth: 0.8)
                 )
                 .position(x: pRect.midX, y: pRect.midY)
+                .animation(.spring(response: 0.34, dampingFraction: 0.84), value: viewModel.config.showSilhouette)
             }
         }
         .contentShape(Rectangle())
@@ -182,7 +189,7 @@ struct PosterCanvasView: View {
         let sheetW = geom.printableWMM * pxPerMM
         let sheetH = geom.printableHMM * pxPerMM
         let ovPx = geom.overlapMM * pxPerMM
-        let accent = themeManager.primaryAccent
+        let accent = themeManager.accent(for: viewModel.currentStep)
 
         return Canvas { ctx, _ in
             // Overlap glue strips
@@ -280,7 +287,11 @@ struct PosterCanvasView: View {
         let gw = totalW * pxPerMM
         let gh = totalH * pxPerMM
 
-        let shiftRight = viewModel.config.showSilhouette ? min(availW * 0.14, max(16.0, (availW - gw) * 0.28)) : 0.0
+        // Clamp right shift strictly inside the canvas bounds so poster never clips on the right edge;
+        // when silhouette is disabled, shiftRight is 0 so the poster sits at exact geometric center.
+        let maxSafeShift = max(0.0, (availW - gw) * 0.5)
+        let idealShift = min(availW * 0.13, max(14.0, (availW - gw) * 0.28))
+        let shiftRight = viewModel.config.showSilhouette ? min(maxSafeShift, idealShift) : 0.0
         let px = (Double(size.width) - gw) * 0.5 + shiftRight + Double(pan.width)
         let py = Double(padTop) + (availH - gh) * 0.5 + Double(pan.height)
         return CanvasLayout(posterRect: CGRect(x: px, y: py, width: gw, height: gh), pxPerMM: pxPerMM)
@@ -308,7 +319,7 @@ struct PosterCanvasView: View {
         let cx1 = imgRect.minX + crop.x1 * imgRect.width
         let cy1 = imgRect.minY + crop.y1 * imgRect.height
         let cropRect = CGRect(x: cx0, y: cy0, width: cx1 - cx0, height: cy1 - cy0)
-        let accent = themeManager.primaryAccent
+        let accent = themeManager.accent(for: viewModel.currentStep)
 
         return ZStack {
             Image(uiImage: sourceImage)
@@ -571,5 +582,28 @@ struct PosterCanvasView: View {
             .font(.system(size: 10, weight: .bold))
             .foregroundColor(color.opacity(1.8))
         ctx.draw(lbl, at: CGPoint(x: hx + houseW * 0.5, y: floorY + 11), anchor: .center)
+    }
+}
+
+/// Static blueprint dot grid rendered once into an offscreen Metal layer via `.drawingGroup()`.
+private struct BlueprintDotGridView: View, Equatable {
+    let isDark: Bool
+
+    var body: some View {
+        Canvas { ctx, canvasSize in
+            let dotColor = isDark ? Color.white.opacity(0.08) : Color.black.opacity(0.08)
+            let step: CGFloat = 20
+            var y: CGFloat = 10
+            while y < canvasSize.height {
+                var x: CGFloat = 10
+                while x < canvasSize.width {
+                    ctx.fill(Path(CGRect(x: x, y: y, width: 1.5, height: 1.5)), with: .color(dotColor))
+                    x += step
+                }
+                y += step
+            }
+        }
+        .drawingGroup()
+        .allowsHitTesting(false)
     }
 }

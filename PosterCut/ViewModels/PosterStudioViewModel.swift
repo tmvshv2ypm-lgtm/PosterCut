@@ -88,6 +88,31 @@ final class PosterStudioViewModel: ObservableObject {
         setLoadedImage(sample, name: "Aurora Glacier UHD")
     }
 
+    func closeProject() {
+        previewTask?.cancel()
+        previewTask = nil
+        rawImage = nil
+        previewImage = nil
+        cropSourceImage = nil
+        geometry = nil
+        styleThumbnails.removeAll()
+        sourceName = ""
+        isCropMode = false
+        config.excludedTiles.removeAll()
+        config.crop = .full
+        triggerHaptic(.light)
+    }
+
+    /// Fast path for paper/sheets/margin/overlap changes:
+    /// In Original UHD mode the bitmap doesn't change, so we skip image re-rendering completely (zero CPU/heat!).
+    func onGeometrySettingChanged() {
+        if config.style.isHalftone {
+            refreshGeometryAndPreview(immediate: false)
+        } else {
+            recomputeGeometryOnly()
+        }
+    }
+
     func pasteFromClipboard() {
         if let pasted = UIPasteboard.general.image {
             setLoadedImage(pasted, name: L10n.tr("btn_paste_clipboard"))
@@ -190,7 +215,7 @@ final class PosterStudioViewModel: ObservableObject {
                 config.physicalAxis = .wide
             }
             config.landscape = res.bestLandscape
-            refreshGeometryAndPreview(immediate: true)
+            onGeometrySettingChanged()
             let orientStr = L10n.tr(res.bestLandscape ? "orient_landscape" : "orient_portrait")
             if saved > 0 {
                 showToast(L10n.fmt("toast_orient_saved_fmt", orientStr, saved))
@@ -241,11 +266,11 @@ final class PosterStudioViewModel: ObservableObject {
         previewTask?.cancel()
         previewTask = Task {
             if !immediate {
-                try? await Task.sleep(nanoseconds: 70_000_000)
+                try? await Task.sleep(nanoseconds: 130_000_000)
                 if Task.isCancelled { return }
             }
             let rendered = await Task.detached(priority: .userInitiated) {
-                PosterEngine.renderPreviewImage(rawImage: raw, config: cfg, geom: geom, maxDim: 900)
+                PosterEngine.renderPreviewImage(rawImage: raw, config: cfg, geom: geom, maxDim: 820)
             }.value
             if Task.isCancelled { return }
             self.previewImage = rendered

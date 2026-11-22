@@ -6,8 +6,14 @@ struct StyleOptionCard: View {
     let isSelected: Bool
     let accent: Color
     let onTap: () -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 15, style: .continuous)
+        let fill: Color = isSelected
+            ? accent.opacity(colorScheme == .dark ? 0.22 : 0.13)
+            : Color(uiColor: .tertiarySystemFill)
+
         Button(action: onTap) {
             HStack(spacing: 12) {
                 Group {
@@ -50,14 +56,12 @@ struct StyleOptionCard: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
-            .liquidGlassRoundedRect(
-                cornerRadius: 16,
-                tint: isSelected ? accent.opacity(0.16) : nil,
-                interactive: true
-            )
+            .background(shape.fill(fill))
             .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .strokeBorder(isSelected ? accent : Color.clear, lineWidth: 1.5)
+                shape.strokeBorder(
+                    isSelected ? accent : Color.primary.opacity(colorScheme == .dark ? 0.08 : 0.05),
+                    lineWidth: isSelected ? 1.5 : 0.7
+                )
             )
         }
         .buttonStyle(.plain)

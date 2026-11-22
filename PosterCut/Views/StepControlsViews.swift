@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// Step-by-step Liquid Glass inspector controls (Steps 1-4) designed for fast one-hand iPhone & iPad use.
+/// Step-by-step inspector controls (Steps 1-4) designed for fast one-hand iPhone & iPad use
+/// with lightweight native surfaces inside scroll views (cool GPU & 60/120fps scrolling).
 struct StepControlsView: View {
     @ObservedObject var viewModel: PosterStudioViewModel
     let onPickPhotos: () -> Void
@@ -28,9 +29,9 @@ struct StepControlsView: View {
     }
 }
 
-// MARK: - Reusable Glass Card Container
+// MARK: - Reusable Lightweight Section Card
 
-private struct GlassSectionCard<Content: View>: View {
+private struct StudioSectionCard<Content: View>: View {
     let title: String?
     let trailing: AnyView?
     @ViewBuilder let content: () -> Content
@@ -61,7 +62,7 @@ private struct GlassSectionCard<Content: View>: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .liquidGlassRoundedRect(cornerRadius: 20, interactive: false)
+        .studioCardSurface(cornerRadius: 20)
     }
 }
 
@@ -75,20 +76,22 @@ private struct ImageStepControls: View {
     let onPickFiles: () -> Void
     let onPromptURL: () -> Void
 
+    private var accent: Color { themeManager.accent(for: .image) }
+
     var body: some View {
         let dims = viewModel.croppedPixelSize
         let mp = Double(dims.w * dims.h) / 1_000_000.0
 
         VStack(spacing: 12) {
-            GlassSectionCard(title: L10n.tr("sec_source_image")) {
+            StudioSectionCard(title: L10n.tr("sec_source_image")) {
                 HStack(spacing: 12) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 11, style: .continuous)
-                            .fill(themeManager.primaryAccent.opacity(0.15))
+                            .fill(accent.opacity(0.16))
                             .frame(width: 42, height: 42)
                         Image(systemName: "photo.fill")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(themeManager.primaryAccent)
+                            .foregroundStyle(accent)
                     }
 
                     VStack(alignment: .leading, spacing: 2) {
@@ -104,14 +107,14 @@ private struct ImageStepControls: View {
                 }
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
-                    sourceActionButton(icon: "photo.on.rectangle", title: L10n.tr("btn_change_image"), tint: themeManager.primaryAccent, action: onPickPhotos)
+                    sourceActionButton(icon: "photo.on.rectangle", title: L10n.tr("btn_change_image"), tint: accent, action: onPickPhotos)
                     sourceActionButton(icon: "folder", title: L10n.tr("ios_from_files"), tint: nil, action: onPickFiles)
                     sourceActionButton(icon: "doc.on.clipboard", title: L10n.tr("btn_paste_clipboard"), tint: nil, action: viewModel.pasteFromClipboard)
                     sourceActionButton(icon: "link", title: L10n.tr("btn_from_url"), tint: nil, action: onPromptURL)
                 }
             }
 
-            GlassSectionCard(title: L10n.tr("sec_transforms")) {
+            StudioSectionCard(title: L10n.tr("sec_transforms")) {
                 HStack(spacing: 8) {
                     transformButton(icon: "rotate.left", label: L10n.tr("tip_rotate_left")) {
                         viewModel.rotate(by: -90)
@@ -128,7 +131,7 @@ private struct ImageStepControls: View {
                 }
             }
 
-            GlassSectionCard(title: L10n.tr("sec_crop")) {
+            StudioSectionCard(title: L10n.tr("sec_crop")) {
                 HStack(spacing: 10) {
                     Button {
                         withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
@@ -144,9 +147,8 @@ private struct ImageStepControls: View {
                         .foregroundStyle(viewModel.isCropMode ? .white : .primary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .liquidGlassCapsule(
-                            tint: viewModel.isCropMode ? themeManager.primaryAccent : nil,
-                            interactive: true
+                        .background(
+                            Capsule().fill(viewModel.isCropMode ? accent : Color(uiColor: .tertiarySystemFill))
                         )
                     }
                     .buttonStyle(.plain)
@@ -160,7 +162,7 @@ private struct ImageStepControls: View {
                                 .foregroundStyle(.secondary)
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 10)
-                                .liquidGlassCapsule(interactive: true)
+                                .background(Capsule().fill(Color(uiColor: .tertiarySystemFill)))
                         }
                         .buttonStyle(.plain)
                     }
@@ -183,7 +185,7 @@ private struct ImageStepControls: View {
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 10)
             .padding(.vertical, 9)
-            .liquidGlassCapsule(tint: tint, interactive: true)
+            .background(Capsule().fill(tint ?? Color(uiColor: .tertiarySystemFill)))
         }
         .buttonStyle(.plain)
     }
@@ -193,7 +195,7 @@ private struct ImageStepControls: View {
             VStack(spacing: 4) {
                 Image(systemName: icon)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(themeManager.primaryAccent)
+                    .foregroundStyle(accent)
                 Text(label)
                     .font(.system(size: 10, weight: .medium))
                     .foregroundStyle(.secondary)
@@ -202,7 +204,10 @@ private struct ImageStepControls: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 9)
-            .liquidGlassRoundedRect(cornerRadius: 14, interactive: true)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Color(uiColor: .tertiarySystemFill))
+            )
         }
         .buttonStyle(.plain)
     }
@@ -213,22 +218,26 @@ private struct ImageStepControls: View {
 private struct PaperStepControls: View {
     @ObservedObject var viewModel: PosterStudioViewModel
     @ObservedObject private var themeManager = PosterThemeManager.shared
+    @Environment(\.colorScheme) private var colorScheme
 
     private let quickSheetPresets: [Double] = [1, 2, 2.5, 3, 4, 5, 6, 8]
+    private var accent: Color { themeManager.accent(for: .paper) }
 
     var body: some View {
         VStack(spacing: 12) {
             // Paper Preset & Orientation
-            GlassSectionCard(title: L10n.tr("sec_paper_format")) {
-                HStack {
+            StudioSectionCard(title: L10n.tr("sec_paper_format")) {
+                HStack(spacing: 8) {
                     Text(L10n.tr("lbl_paper_size"))
                         .font(.subheadline)
-                    Spacer()
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
+                    Spacer(minLength: 4)
                     Picker(L10n.tr("lbl_paper_size"), selection: Binding(
                         get: { viewModel.config.paperID },
                         set: { newID in
                             viewModel.config.paperID = newID
-                            viewModel.refreshGeometryAndPreview()
+                            viewModel.onGeometrySettingChanged()
                         }
                     )) {
                         ForEach(PaperPreset.all) { preset in
@@ -236,7 +245,9 @@ private struct PaperStepControls: View {
                         }
                     }
                     .pickerStyle(.menu)
-                    .tint(themeManager.primaryAccent)
+                    .tint(accent)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
                 }
 
                 if viewModel.config.paperID == "custom" {
@@ -245,7 +256,7 @@ private struct PaperStepControls: View {
                             title: L10n.tr("lbl_width_mm"),
                             value: Binding(
                                 get: { viewModel.config.customWidthMM },
-                                set: { viewModel.config.customWidthMM = max(50, min(1500, $0)); viewModel.refreshGeometryAndPreview() }
+                                set: { viewModel.config.customWidthMM = max(50, min(1500, $0)); viewModel.onGeometrySettingChanged() }
                             ),
                             range: 50...1500,
                             step: 5
@@ -254,7 +265,7 @@ private struct PaperStepControls: View {
                             title: L10n.tr("lbl_height_mm"),
                             value: Binding(
                                 get: { viewModel.config.customHeightMM },
-                                set: { viewModel.config.customHeightMM = max(50, min(1500, $0)); viewModel.refreshGeometryAndPreview() }
+                                set: { viewModel.config.customHeightMM = max(50, min(1500, $0)); viewModel.onGeometrySettingChanged() }
                             ),
                             range: 50...1500,
                             step: 5
@@ -267,7 +278,7 @@ private struct PaperStepControls: View {
                         get: { viewModel.config.landscape },
                         set: { newVal in
                             viewModel.config.landscape = newVal
-                            viewModel.refreshGeometryAndPreview()
+                            viewModel.onGeometrySettingChanged()
                         }
                     )) {
                         Label(L10n.tr("orient_portrait"), systemImage: "rectangle.portrait").tag(false)
@@ -283,18 +294,24 @@ private struct PaperStepControls: View {
                                 .font(.caption.weight(.bold))
                             Text(L10n.tr("btn_optimize"))
                                 .font(.caption.weight(.bold))
+                                .lineLimit(1)
                         }
-                        .foregroundStyle(themeManager.primaryAccent)
+                        .foregroundStyle(colorScheme == .dark ? .white : accent)
                         .padding(.horizontal, 11)
                         .padding(.vertical, 8)
-                        .liquidGlassCapsule(tint: themeManager.primaryAccent.opacity(0.14), interactive: true)
+                        .background(
+                            Capsule().fill(accent.opacity(colorScheme == .dark ? 0.28 : 0.14))
+                        )
+                        .overlay(
+                            Capsule().strokeBorder(accent.opacity(colorScheme == .dark ? 0.65 : 0.35), lineWidth: 1.0)
+                        )
                     }
                     .buttonStyle(.plain)
                 }
             }
 
             // Output Size (Sheets decimal or Physical cm/in)
-            GlassSectionCard(title: L10n.tr("sec_output_size")) {
+            StudioSectionCard(title: L10n.tr("sec_output_size")) {
                 Picker("", selection: Binding(
                     get: { viewModel.config.sizeMode },
                     set: { mode in
@@ -303,7 +320,7 @@ private struct PaperStepControls: View {
                             viewModel.config.physicalAxis = .wide
                         }
                         viewModel.config.sizeMode = mode
-                        viewModel.refreshGeometryAndPreview()
+                        viewModel.onGeometrySettingChanged()
                     }
                 )) {
                     Text(L10n.tr("size_by_sheets")).tag(SizeMode.sheets)
@@ -316,7 +333,7 @@ private struct PaperStepControls: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(String(format: "%.1f %@", viewModel.config.sheetsValue, L10n.tr("lbl_sheets_word")))
                                 .font(.title3.weight(.bold).monospacedDigit())
-                                .foregroundStyle(themeManager.primaryAccent)
+                                .foregroundStyle(accent)
                             Text(L10n.tr("hint_decimal_sheets"))
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
@@ -326,7 +343,7 @@ private struct PaperStepControls: View {
                             "",
                             value: Binding(
                                 get: { viewModel.config.sheetsValue },
-                                set: { viewModel.config.sheetsValue = max(0.5, min(25.0, ($0 * 10).rounded() / 10)); viewModel.refreshGeometryAndPreview() }
+                                set: { viewModel.config.sheetsValue = max(0.5, min(25.0, ($0 * 10).rounded() / 10)); viewModel.onGeometrySettingChanged() }
                             ),
                             in: 0.5...25.0,
                             step: 0.5
@@ -337,12 +354,12 @@ private struct PaperStepControls: View {
                     Slider(
                         value: Binding(
                             get: { min(12.0, viewModel.config.sheetsValue) },
-                            set: { viewModel.config.sheetsValue = ($0 * 10).rounded() / 10; viewModel.refreshGeometryAndPreview() }
+                            set: { viewModel.config.sheetsValue = ($0 * 10).rounded() / 10; viewModel.onGeometrySettingChanged() }
                         ),
                         in: 0.5...12.0,
                         step: 0.1
                     )
-                    .tint(themeManager.primaryAccent)
+                    .tint(accent)
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 6) {
@@ -350,14 +367,16 @@ private struct PaperStepControls: View {
                                 let active = abs(viewModel.config.sheetsValue - val) < 0.05
                                 Button {
                                     viewModel.config.sheetsValue = val
-                                    viewModel.refreshGeometryAndPreview()
+                                    viewModel.onGeometrySettingChanged()
                                 } label: {
                                     Text(val == floor(val) ? "\(Int(val))" : String(format: "%.1f", val))
                                         .font(.caption.weight(.bold).monospacedDigit())
                                         .foregroundStyle(active ? .white : .primary)
-                                        .padding(.horizontal, 11)
+                                        .padding(.horizontal, 12)
                                         .padding(.vertical, 6)
-                                        .liquidGlassCapsule(tint: active ? themeManager.primaryAccent : nil, interactive: true)
+                                        .background(
+                                            Capsule().fill(active ? accent : Color(uiColor: .tertiarySystemFill))
+                                        )
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -366,7 +385,7 @@ private struct PaperStepControls: View {
 
                     Picker("", selection: Binding(
                         get: { viewModel.config.sheetsAxis },
-                        set: { viewModel.config.sheetsAxis = $0; viewModel.refreshGeometryAndPreview() }
+                        set: { viewModel.config.sheetsAxis = $0; viewModel.onGeometrySettingChanged() }
                     )) {
                         Text(L10n.tr("axis_wide")).tag(SizeAxis.wide)
                         Text(L10n.tr("axis_high")).tag(SizeAxis.high)
@@ -380,11 +399,11 @@ private struct PaperStepControls: View {
                     HStack {
                         Text(String(format: "%.1f %@", displayVal, unitLabel))
                             .font(.title3.weight(.bold).monospacedDigit())
-                            .foregroundStyle(themeManager.primaryAccent)
+                            .foregroundStyle(accent)
                         Spacer()
                         Picker("", selection: Binding(
                             get: { viewModel.config.unit },
-                            set: { viewModel.config.unit = $0; viewModel.refreshGeometryAndPreview() }
+                            set: { viewModel.config.unit = $0; viewModel.onGeometrySettingChanged() }
                         )) {
                             Text(L10n.tr("unit_cm")).tag(LengthUnit.cm)
                             Text(L10n.tr("unit_in")).tag(LengthUnit.inch)
@@ -396,17 +415,17 @@ private struct PaperStepControls: View {
                     Slider(
                         value: Binding(
                             get: { min(350.0, viewModel.config.physicalValueCM) },
-                            set: { viewModel.config.physicalValueCM = $0.rounded(); viewModel.refreshGeometryAndPreview() }
+                            set: { viewModel.config.physicalValueCM = $0.rounded(); viewModel.onGeometrySettingChanged() }
                         ),
                         in: 10.0...350.0,
                         step: 1.0
                     )
-                    .tint(themeManager.primaryAccent)
+                    .tint(accent)
 
                     HStack {
                         Picker("", selection: Binding(
                             get: { viewModel.config.physicalAxis },
-                            set: { viewModel.config.physicalAxis = $0; viewModel.refreshGeometryAndPreview() }
+                            set: { viewModel.config.physicalAxis = $0; viewModel.onGeometrySettingChanged() }
                         )) {
                             Text(L10n.tr("axis_wide")).tag(SizeAxis.wide)
                             Text(L10n.tr("axis_high")).tag(SizeAxis.high)
@@ -417,7 +436,7 @@ private struct PaperStepControls: View {
                             "",
                             value: Binding(
                                 get: { viewModel.config.physicalValueCM },
-                                set: { viewModel.config.physicalValueCM = max(5.0, min(800.0, $0)); viewModel.refreshGeometryAndPreview() }
+                                set: { viewModel.config.physicalValueCM = max(5.0, min(800.0, $0)); viewModel.onGeometrySettingChanged() }
                             ),
                             in: 5.0...800.0,
                             step: 1.0
@@ -428,10 +447,10 @@ private struct PaperStepControls: View {
             }
 
             // Margins & Glue Overlap
-            GlassSectionCard(title: L10n.tr("sec_margins_overlap")) {
+            StudioSectionCard(title: L10n.tr("sec_margins_overlap")) {
                 Toggle(isOn: Binding(
                     get: { viewModel.config.marginEnabled },
-                    set: { viewModel.config.marginEnabled = $0; viewModel.refreshGeometryAndPreview() }
+                    set: { viewModel.config.marginEnabled = $0; viewModel.onGeometrySettingChanged() }
                 )) {
                     VStack(alignment: .leading, spacing: 1) {
                         Text(L10n.tr("lbl_white_margin"))
@@ -447,19 +466,19 @@ private struct PaperStepControls: View {
                     Slider(
                         value: Binding(
                             get: { viewModel.config.marginMM },
-                            set: { viewModel.config.marginMM = $0.rounded(); viewModel.refreshGeometryAndPreview() }
+                            set: { viewModel.config.marginMM = $0.rounded(); viewModel.onGeometrySettingChanged() }
                         ),
                         in: 2...35,
                         step: 1
                     )
-                    .tint(themeManager.primaryAccent)
+                    .tint(accent)
                 }
 
                 Divider()
 
                 Toggle(isOn: Binding(
                     get: { viewModel.config.overlapEnabled },
-                    set: { viewModel.config.overlapEnabled = $0; viewModel.refreshGeometryAndPreview() }
+                    set: { viewModel.config.overlapEnabled = $0; viewModel.onGeometrySettingChanged() }
                 )) {
                     VStack(alignment: .leading, spacing: 1) {
                         Text(L10n.tr("lbl_glue_overlap"))
@@ -476,12 +495,12 @@ private struct PaperStepControls: View {
                         Slider(
                             value: Binding(
                                 get: { viewModel.config.overlapMM },
-                                set: { viewModel.config.overlapMM = $0.rounded(); viewModel.refreshGeometryAndPreview() }
+                                set: { viewModel.config.overlapMM = $0.rounded(); viewModel.onGeometrySettingChanged() }
                             ),
                             in: 2...25,
                             step: 1
                         )
-                        .tint(themeManager.primaryAccent)
+                        .tint(accent)
 
                         Text(String(format: "%.0f mm", viewModel.config.overlapMM))
                             .font(.caption.weight(.bold).monospacedDigit())
@@ -508,7 +527,7 @@ private struct PaperStepControls: View {
         }
         .padding(8)
         .frame(maxWidth: .infinity)
-        .background(Color(uiColor: .secondarySystemGroupedBackground).opacity(0.65), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .background(Color(uiColor: .tertiarySystemFill), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
 
@@ -518,16 +537,18 @@ private struct StyleStepControls: View {
     @ObservedObject var viewModel: PosterStudioViewModel
     @ObservedObject private var themeManager = PosterThemeManager.shared
 
+    private var accent: Color { themeManager.accent(for: .style) }
+
     var body: some View {
         VStack(spacing: 12) {
-            GlassSectionCard(title: L10n.tr("sec_visual_style")) {
+            StudioSectionCard(title: L10n.tr("sec_visual_style")) {
                 VStack(spacing: 8) {
                     ForEach(PosterStyle.allCases) { style in
                         StyleOptionCard(
                             style: style,
                             thumbnail: viewModel.styleThumbnails[style],
                             isSelected: viewModel.config.style == style,
-                            accent: themeManager.primaryAccent
+                            accent: accent
                         ) {
                             viewModel.applyStyle(style)
                         }
@@ -536,14 +557,14 @@ private struct StyleStepControls: View {
             }
 
             if viewModel.config.style == .original {
-                GlassSectionCard(
+                StudioSectionCard(
                     title: L10n.tr("sec_photo_adjust"),
                     trailing: AnyView(
                         Button(L10n.tr("btn_reset_adjust")) {
                             viewModel.resetPhotoAdjustments()
                         }
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(themeManager.primaryAccent)
+                        .foregroundStyle(accent)
                     )
                 ) {
                     percentSlider(
@@ -579,7 +600,7 @@ private struct StyleStepControls: View {
                     .tint(Color(uiColor: .systemGreen))
                 }
             } else {
-                GlassSectionCard(title: L10n.tr("sec_halftone_params")) {
+                StudioSectionCard(title: L10n.tr("sec_halftone_params")) {
                     labeledSlider(
                         title: L10n.tr("lbl_dot_size"),
                         value: Binding(
@@ -601,7 +622,7 @@ private struct StyleStepControls: View {
                     )
                 }
 
-                GlassSectionCard(title: L10n.tr("sec_color_palettes")) {
+                StudioSectionCard(title: L10n.tr("sec_color_palettes")) {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 6), spacing: 8) {
                         ForEach(ColorPreset.all) { preset in
                             let selected = viewModel.config.colorMode == preset.colorMode
@@ -611,7 +632,7 @@ private struct StyleStepControls: View {
                             ColorPresetSwatchButton(
                                 preset: preset,
                                 isSelected: selected,
-                                accent: themeManager.primaryAccent
+                                accent: accent
                             ) {
                                 viewModel.applyColorPreset(preset)
                             }
@@ -689,7 +710,7 @@ private struct StyleStepControls: View {
                     .foregroundStyle(.secondary)
             }
             Slider(value: value, in: range)
-                .tint(themeManager.primaryAccent)
+                .tint(accent)
         }
     }
 
@@ -705,7 +726,7 @@ private struct StyleStepControls: View {
                     .foregroundStyle(.secondary)
             }
             Slider(value: value, in: range)
-                .tint(themeManager.primaryAccent)
+                .tint(accent)
         }
     }
 }
@@ -715,13 +736,16 @@ private struct StyleStepControls: View {
 private struct ExportStepControls: View {
     @ObservedObject var viewModel: PosterStudioViewModel
     @ObservedObject private var themeManager = PosterThemeManager.shared
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var accent: Color { themeManager.accent(for: .export) }
 
     var body: some View {
         let activeCount = viewModel.geometry?.activeSheets ?? 0
 
         VStack(spacing: 12) {
             // Primary Share + Sheet Preview + AirPrint Action Suite
-            GlassSectionCard {
+            StudioSectionCard {
                 Button {
                     viewModel.exportAndShare()
                 } label: {
@@ -738,7 +762,7 @@ private struct ExportStepControls: View {
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
-                    .liquidGlassCapsule(tint: themeManager.primaryAccent, interactive: true)
+                    .liquidGlassCapsule(tint: accent, interactive: true)
                 }
                 .buttonStyle(.plain)
                 .disabled(activeCount == 0 || viewModel.isExporting)
@@ -758,7 +782,7 @@ private struct ExportStepControls: View {
                         .foregroundStyle(.primary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 11)
-                        .liquidGlassCapsule(interactive: true)
+                        .background(Capsule().fill(Color(uiColor: .tertiarySystemFill)))
                     }
                     .buttonStyle(.plain)
                     .disabled(activeCount == 0)
@@ -769,16 +793,17 @@ private struct ExportStepControls: View {
                         HStack(spacing: 6) {
                             Image(systemName: "printer.fill")
                                 .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(themeManager.primaryAccent)
+                                .foregroundStyle(colorScheme == .dark ? .white : accent)
                             Text(L10n.tr("ios_airprint"))
                                 .font(.subheadline.weight(.semibold))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
                         }
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(colorScheme == .dark ? .white : accent)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 11)
-                        .liquidGlassCapsule(tint: themeManager.primaryAccent.opacity(0.14), interactive: true)
+                        .background(Capsule().fill(accent.opacity(colorScheme == .dark ? 0.28 : 0.14)))
+                        .overlay(Capsule().strokeBorder(accent.opacity(colorScheme == .dark ? 0.62 : 0.34), lineWidth: 1.0))
                     }
                     .buttonStyle(.plain)
                     .disabled(activeCount == 0 || viewModel.isExporting)
@@ -790,20 +815,20 @@ private struct ExportStepControls: View {
                     } label: {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.uturn.backward.circle.fill")
-                                .foregroundStyle(themeManager.primaryAccent)
+                                .foregroundStyle(accent)
                             Text(L10n.fmt("btn_restore_excluded_fmt", viewModel.config.excludedTiles.count))
                                 .font(.caption.weight(.semibold))
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 8)
-                        .liquidGlassCapsule(interactive: true)
+                        .background(Capsule().fill(Color(uiColor: .tertiarySystemFill)))
                     }
                     .buttonStyle(.plain)
                 }
             }
 
             // Export Format & Lossless Quality
-            GlassSectionCard(title: L10n.tr("sec_export_format")) {
+            StudioSectionCard(title: L10n.tr("sec_export_format")) {
                 Picker("", selection: Binding(
                     get: { viewModel.config.exportFormat },
                     set: { viewModel.config.exportFormat = $0 }
@@ -847,7 +872,7 @@ private struct ExportStepControls: View {
             }
 
             // Printing Guides & Assembly Map
-            GlassSectionCard(title: L10n.tr("sec_guides_options")) {
+            StudioSectionCard(title: L10n.tr("sec_guides_options")) {
                 Toggle(L10n.tr("lbl_crop_marks"), isOn: Binding(
                     get: { viewModel.config.cropMarks },
                     set: { viewModel.config.cropMarks = $0 }

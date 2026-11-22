@@ -5,6 +5,9 @@ on:
     branches: [ "main", "master" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-ios:
     name: Compile PosterCut on Xcode 27 Runner
@@ -44,3 +47,12 @@ jobs:
           name: PosterCut-iOS-IPA
           path: PosterCut-Unsigned.ipa
           retention-days: 30
+
+      - name: Publish Unsigned .ipa to Latest Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: PosterCut iOS (Latest Build)
+          body: Latest unsigned iOS build compiled on Xcode 27 for sideloading via AltKeeper / SideStore / Sideloadly.
+          files: PosterCut-Unsigned.ipa
+          make_latest: true

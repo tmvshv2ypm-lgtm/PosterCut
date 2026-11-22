@@ -58,7 +58,7 @@ struct SettingsSheet: View {
                                     .foregroundStyle(themeManager.primaryAccent)
 
                                 HStack(spacing: 3) {
-                                    ForEach(Array(themeManager.currentTheme.swatchColors.prefix(3).enumerated()), id: \.offset) { _, swatch in
+                                    ForEach(Array(themeManager.currentTheme.swatchColors.prefix(4).enumerated()), id: \.offset) { _, swatch in
                                         Circle()
                                             .fill(swatch)
                                             .frame(width: 8, height: 8)
@@ -193,13 +193,23 @@ struct PosterThemePickerView: View {
                                     .font(.subheadline.weight(.bold))
                                     .foregroundStyle(.primary)
 
+                                Text(L10n.tr(theme.subtitleKey))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
+
                                 HStack(spacing: 5) {
                                     ForEach(Array(theme.swatchColors.enumerated()), id: \.offset) { _, swatch in
                                         Circle()
                                             .fill(swatch)
                                             .frame(width: 10, height: 10)
+                                            .overlay(
+                                                Circle()
+                                                    .strokeBorder(Color.primary.opacity(0.12), lineWidth: 0.5)
+                                            )
                                     }
                                 }
+                                .padding(.top, 2)
                             }
 
                             Spacer(minLength: 6)
@@ -229,50 +239,70 @@ struct PosterThemePickerView: View {
             RoundedRectangle(cornerRadius: 22, style: .continuous)
                 .fill(Color(uiColor: .systemGroupedBackground))
 
-            Circle()
-                .fill(themeManager.primaryAccent.opacity(0.16))
-                .frame(width: 170, height: 170)
-                .blur(radius: 36)
-                .offset(x: -70, y: -45)
+            RadialGradient(
+                colors: [themeManager.primaryAccent.opacity(0.16), .clear],
+                center: UnitPoint(x: 0.15, y: 0.15),
+                startRadius: 4,
+                endRadius: 150
+            )
 
-            Circle()
-                .fill(themeManager.secondaryGlow.opacity(0.14))
-                .frame(width: 150, height: 150)
-                .blur(radius: 36)
-                .offset(x: 80, y: 40)
+            RadialGradient(
+                colors: [themeManager.secondaryGlow.opacity(0.14), .clear],
+                center: UnitPoint(x: 0.85, y: 0.85),
+                startRadius: 4,
+                endRadius: 140
+            )
 
             VStack(spacing: 12) {
-                HStack(spacing: 10) {
-                    PosterMarkView(size: 40)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("PosterCut")
-                            .font(.subheadline.weight(.bold))
-                        Text("60.0 × 80.0 cm · 6 \(L10n.tr("lbl_sheets_word"))")
-                            .font(.caption2.monospacedDigit())
-                            .foregroundStyle(.secondary)
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible(), spacing: 10),
+                        GridItem(.flexible(), spacing: 10)
+                    ],
+                    spacing: 10
+                ) {
+                    ForEach(StudioStep.allCases) { step in
+                        let tileColor = themeManager.currentTheme.stepAccent(step)
+                        HStack(spacing: 8) {
+                            ZStack {
+                                Circle()
+                                    .fill(tileColor.opacity(0.22))
+                                    .frame(width: 28, height: 28)
+                                Image(systemName: step.systemIcon)
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(tileColor)
+                            }
+
+                            Text(L10n.tr(step.titleKey))
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(.primary)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.75)
+
+                            Spacer(minLength: 0)
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 9)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .fill(tileColor.opacity(0.12))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .strokeBorder(tileColor.opacity(0.24), lineWidth: 0.8)
+                        )
                     }
-                    Spacer()
-                    Text("300 DPI")
-                        .font(.caption2.weight(.bold))
-                        .foregroundStyle(Color(uiColor: .systemGreen))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color(uiColor: .systemGreen).opacity(0.16), in: Capsule())
                 }
-                .padding(10)
-                .liquidGlassRoundedRect(cornerRadius: 16, tint: themeManager.primaryAccent.opacity(0.10), interactive: false)
 
                 HStack(spacing: 8) {
                     HStack(spacing: 5) {
-                        Image(systemName: "printer.fill")
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(themeManager.primaryAccent)
-                        Text(L10n.tr("ios_airprint"))
-                            .font(.caption2.weight(.bold))
+                        PosterMarkView(size: 22)
+                        Text("60 × 80 cm · 6 \(L10n.tr("lbl_sheets_word"))")
+                            .font(.caption2.weight(.semibold).monospacedDigit())
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
                     }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 7)
-                    .liquidGlassCapsule(interactive: false)
 
                     Spacer()
 
@@ -285,7 +315,7 @@ struct PosterThemePickerView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 7)
-                    .liquidGlassCapsule(tint: themeManager.primaryAccent, interactive: false)
+                    .liquidGlassCapsule(tint: themeManager.currentTheme.stepAccent(.export), interactive: false)
                 }
             }
             .padding(14)

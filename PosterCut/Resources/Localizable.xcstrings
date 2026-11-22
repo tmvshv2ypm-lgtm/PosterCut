@@ -5244,6 +5244,220 @@
         }
       }
     },
+    "ios_theme_colorful": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Original (Multicolor)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Original (Colorido)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оригинал (Мультиколор)"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Original (Colorido)"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Original (Colorido)"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Original (Colorido)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Original (Multicolore)"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Original (Mehrfarbig)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Originale (Multicolore)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "原生（多彩）"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オリジナル（マルチカラー）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오리지널 (멀티컬러)"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Оригінал (Мультиколор)"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oryginał (Wielokolorowy)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orijinal (Çok Renkli)"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الأصلي (متعدد الألوان)"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मूल (बहुरंगी)"
+          }
+        }
+      }
+    },
+    "ios_theme_colorful_sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sapphire, cyan, violet & emerald accents per step"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acentos zafiro, cian, violeta y esmeralda por paso"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сапфировый, циановый, фиолетовый и изумрудный акценты"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Destaques safira, ciano, violeta e esmeralda por etapa"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Destaques safira, ciano, violeta e esmeralda por etapa"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Destaques safira, ciano, violeta e esmeralda por etapa"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accents saphir, cyan, violet et émeraude par étape"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saphir-, Cyan-, Violett- und Smaragd-Akzente je Schritt"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accenti zaffiro, ciano, viola e smeraldo per ogni fase"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "蓝宝石、青色、紫罗兰与翡翠分步强调色"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ステップごとにサファイア・シアン・バイオレット・エメラルド"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "단계별 사파이어·시안·바이올렛·에메랄드 강조색"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сапфіровий, ціановий, фіолетовий і смарагдовий акценти"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akcenty szafirowe, cyjanowe, fioletowe i szmaragdowe"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her adım için safir, camgöbeği, mor ve zümrüt vurgular"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ألوان ياقوتي وسماوي وبنفسجي وزمردي لكل خطوة"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "प्रत्येक चरण के लिए नीलम, सियान, वायलेट और पन्ना रंग"
+          }
+        }
+      }
+    },
     "ios_theme_cyan": {
       "extractionState": "manual",
       "localizations": {
@@ -5351,6 +5565,113 @@
         }
       }
     },
+    "ios_theme_cyan_sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cool glacial cyan glass glow"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brillo cristalino en cian glacial"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прохладное ледяное сияние циана"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brilho cristalino em ciano glacial"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brilho cristalino em ciano glacial"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brilho cristalino em ciano glacial"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Éclat cristallin bleu cyan glacial"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kühler eisblauer Cyan-Glanz"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riflesso cristallino ciano glaciale"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冷冽冰川青色玻璃光泽"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クールな氷河シアンのガラス光沢"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시원한 빙하 시안 글래스 광택"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Прохолодне крижане сяйво ціану"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chłodny lodowcowy blask cyjanu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serin buzul camgöbeği parıltısı"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "توهج زجاجي سماوي جليدي هادئ"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "शीतल ग्लेशियल सियान ग्लास चमक"
+          }
+        }
+      }
+    },
     "ios_theme_emerald": {
       "extractionState": "manual",
       "localizations": {
@@ -5454,6 +5775,113 @@
           "stringUnit": {
             "state": "translated",
             "value": "पन्ना फ्रॉस्ट"
+          }
+        }
+      }
+    },
+    "ios_theme_emerald_sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fresh frosted emerald botanical tone"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tono esmeralda escarchado y fresco"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свежий матовый изумрудный оттенок"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tom esmeralda fosco e refrescante"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tom esmeralda fosco e refrescante"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tom esmeralda fosco e refrescante"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teinte émeraude givrée et fraîche"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frischer mattierter Smaragdton"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tonalità smeraldo ghiacciato fresca"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清新冰霜翡翠绿强调色"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "爽やかなフロストエメラルド調"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "산뜻한 프로스트 에메랄드 톤"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свіжий матовий смарагдовий відтінок"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Świeży matowy odcień szmaragdu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferah buzlu zümrüt tonu"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "درجة زمردية منعشة بلمسة زجاجية"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ताज़ा फ़्रॉस्टेड पन्ना हरा रंग"
           }
         }
       }
@@ -5672,6 +6100,113 @@
         }
       }
     },
+    "ios_theme_graphite_sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimal neutral titanium monochrome"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monocromo neutral minimalista en titanio"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Минималистичный нейтральный титан"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monocromático neutro em titânio"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monocromático neutro em titânio"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monocromático neutro em titânio"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monochrome titane neutre minimaliste"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimalistisches neutrales Titan-Grau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monocromo titanio neutro minimale"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "极简中性钛金单色调"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ミニマルなニュートラルチタン調"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "미니멀한 뉴트럴 티타늄 모노크롬"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Мінімалістичний нейтральний титан"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimalistyczny neutralny tytan"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimalist nötr titanyum monokrom"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أحادي اللون محايد بتصميم تيتانيوم هادئ"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "मिनिमल न्यूट्रल टाइटेनियम मोनोक्रोम"
+          }
+        }
+      }
+    },
     "ios_theme_indigo": {
       "extractionState": "manual",
       "localizations": {
@@ -5775,6 +6310,113 @@
           "stringUnit": {
             "state": "translated",
             "value": "गहरा इंडिगो"
+          }
+        }
+      }
+    },
+    "ios_theme_indigo_sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focused royal indigo studio palette"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paleta índigo intensa y elegante"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выразительная палитра глубокого индиго"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paleta índigo intensa e elegante"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paleta índigo intensa e elegante"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paleta índigo intensa e elegante"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Palette indigo profond raffinée"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fokussierte tiefblaue Indigo-Palette"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Palette indaco profondo raffinata"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沉稳精致的深邃靛蓝色调"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "洗練されたディープインディゴ調"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세련된 딥 인디고 스튜디오 팔레트"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Виразна палітра глибокого індиго"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wyrazista paleta głębokiego indygo"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odaklanmış koyu çivit stüdyo paleti"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لوحة نيلية عميقة أنيقة ومريحة للعين"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "गहरा और परिष्कृत इंडिगो स्टूडियो पैलेट"
           }
         }
       }
@@ -6100,6 +6742,113 @@
         }
       }
     },
+    "ios_theme_rose_sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warm rose quartz studio highlights"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Destellos en cuarzo rosa vibrante"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тёплые акценты розового кварца"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Destaques em quartzo rosa vibrante"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Destaques em quartzo rosa vibrante"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Destaques em quartzo rosa vibrante"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reflets quartz rose lumineux"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akzente in strahlendem Rosenquarz"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accenti in quarzo rosa luminoso"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "温润玫瑰石英强调色"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "華やかなローズクォーツのアクセント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "화사한 로즈 쿼츠 스튜디오 포인트"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Теплі акценти рожевого кварцу"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akcenty w kolorze różowego kwarcu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Canlı pembe kuvars stüdyo vurguları"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "لمسات كوارتز وردي نابض بالحياة"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "जीवंत रोज़ क्वार्ट्ज़ स्टूडियो हाइलाइट्स"
+          }
+        }
+      }
+    },
     "ios_theme_sapphire": {
       "extractionState": "manual",
       "localizations": {
@@ -6203,6 +6952,113 @@
           "stringUnit": {
             "state": "translated",
             "value": "नीलम ग्लास"
+          }
+        }
+      }
+    },
+    "ios_theme_sapphire_sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crisp sapphire blue across studio tools"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azul zafiro limpio en todas las herramientas"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чистый сапфировый синий во всех инструментах"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azul safira nítido em todas as ferramentas"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azul safira nítido em todas as ferramentas"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azul safira nítido em todas as ferramentas"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bleu saphir épuré sur tous les outils"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klares Saphirblau für alle Studio-Werkzeuge"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blu zaffiro nitido su tutti gli strumenti"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清透蓝宝石蓝，贯穿全局控件"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クリアなサファイアブルーを全体に適用"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "전체 도구에 선명한 사파이어 블루 적용"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Чистий сапфіровий синій для всіх інструментів"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Czysty szafirowy błękit w całym studiu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm stüdyo araçlarında berrak safir mavisi"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "أزرق ياقوتي نقي عبر جميع أدوات الاستوديو"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "सभी स्टूडियो टूल के लिए स्पष्ट नीलम नीला"
           }
         }
       }
@@ -6524,6 +7380,113 @@
           "stringUnit": {
             "state": "translated",
             "value": "नेबुला वायलेट"
+          }
+        }
+      }
+    },
+    "ios_theme_violet_sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luminous nebula violet glass tint"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matiz violeta luminoso de nebulosa"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сияющий фиолетовый оттенок туманности"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matiz violeta luminoso de nebulosa"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matiz violeta luminoso de nebulosa"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Matiz violeta luminoso de nebulosa"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teinte violette lumineuse nébuleuse"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leuchtender Nebula-Violett-Akzent"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sfumatura viola nebulosa luminosa"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通透星云紫色玻璃质感"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "透明感のあるネビュラバイオレット"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빛나는 네뷸라 바이올렛 글래스 톤"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сяючий фіолетовий відтінок туманності"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Świetlisty mgławicowy odcień fioletu"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parlak bulutsu moru cam tonu"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تدرج بنفسجي سديمي مشرق"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "चमकदार नेबुला वायलेट ग्लास टिंट"
           }
         }
       }
@@ -11242,103 +12205,103 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Print & Sheet Preview"
+            "value": "Sheet Preview"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vista previa de hojas e impresión"
+            "value": "Vista de hojas"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Предпросмотр листов и печать"
+            "value": "Просмотр листов"
           }
         },
         "pt": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pré-visualização de folhas e impressão"
+            "value": "Prévia de folhas"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pré-visualização de folhas e impressão"
+            "value": "Prévia de folhas"
           }
         },
         "pt-PT": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pré-visualização de folhas e impressão"
+            "value": "Prévia de folhas"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aperçu avant impression"
+            "value": "Aperçu des feuilles"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Druck- & Blattvorschau"
+            "value": "Blattvorschau"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Anteprima di stampa e fogli"
+            "value": "Anteprima fogli"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "分页与打印预览"
+            "value": "单页预览"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "印刷・シートプレビュー"
+            "value": "シートプレビュー"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "인쇄 및 시트 미리보기"
+            "value": "시트 미리보기"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Попередній перегляд і друк"
+            "value": "Перегляд аркушів"
           }
         },
         "pl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Podgląd wydruku i arkuszy"
+            "value": "Podgląd arkuszy"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yazdırma ve Sayfa Önizleme"
+            "value": "Sayfa Önizleme"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "معاينة الأوراق والطباعة"
+            "value": "معاينة الصفحات"
           }
         },
         "hi": {
           "stringUnit": {
             "state": "translated",
-            "value": "प्रिंट और शीट पूर्वावलोकन"
+            "value": "शीट पूर्वावलोकन"
           }
         }
       }
@@ -15084,6 +16047,113 @@
           "stringUnit": {
             "state": "translated",
             "value": "सिस्टम"
+          }
+        }
+      }
+    },
+    "tip_back_home": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back to home"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver al inicio"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На главный экран"
+          }
+        },
+        "pt": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltar ao início"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltar ao início"
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltar ao início"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retour à l'accueil"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zur Startseite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torna alla home"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "返回主页"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホームへ戻る"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "홈으로 돌아가기"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "На головну"
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Powrót do ekranu głównego"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ana ekrana dön"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "العودة للرئيسية"
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "होम पर वापस जाएँ"
           }
         }
       }

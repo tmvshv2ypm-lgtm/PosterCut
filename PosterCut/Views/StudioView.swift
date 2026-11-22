@@ -1,10 +1,11 @@
 import SwiftUI
 import PhotosUI
 import UniformTypeIdentifiers
+import UIKit
 
 /// Main native iOS 26 Liquid Glass studio for PosterCut.
-/// Automatically adapts between Portrait iPhone (top canvas + bottom glass inspector)
-/// and Landscape / iPad (side-by-side canvas + glass sidebar).
+/// Automatically adapts between Portrait iPhone (top canvas + faded scroll inspector + bottom floating Liquid Glass bar)
+/// and Landscape / iPad (side-by-side canvas + inspector sidebar).
 struct StudioView: View {
     @StateObject private var viewModel = PosterStudioViewModel()
     @ObservedObject private var themeManager = PosterThemeManager.shared
@@ -16,15 +17,19 @@ struct StudioView: View {
     @State private var showURLAlert: Bool = false
     @State private var urlInputText: String = ""
 
+    private var activeAccent: Color {
+        viewModel.hasImage ? themeManager.accent(for: viewModel.currentStep) : themeManager.primaryAccent
+    }
+
     var body: some View {
         ZStack {
-            AmbientLiquidBackdrop()
+            AmbientLiquidBackdrop(activeAccent: activeAccent)
 
             VStack(spacing: 0) {
                 topHeaderBar
                     .padding(.horizontal, 16)
                     .padding(.top, 6)
-                    .padding(.bottom, 8)
+                    .padding(.bottom, viewModel.hasImage ? 8 : 4)
 
                 if viewModel.hasImage {
                     GeometryReader { geo in
@@ -38,21 +43,23 @@ struct StudioView: View {
                                     .frame(maxHeight: .infinity)
                             }
                             .padding(.horizontal, 14)
-                            .padding(.bottom, 10)
+                            .padding(.bottom, 8)
                         } else {
-                            VStack(spacing: 10) {
+                            VStack(spacing: 6) {
                                 canvasContainer
                                     .frame(height: max(220, geo.size.height * 0.43))
                                 inspectorContainer
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                             }
                             .padding(.horizontal, 12)
-                            .padding(.bottom, 6)
+                            .padding(.bottom, 4)
                         }
                     }
+                    .transition(.opacity)
                 } else {
                     welcomeEmptyState
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .transition(.opacity)
                 }
             }
 
@@ -62,7 +69,7 @@ struct StudioView: View {
                     .transition(.opacity.combined(with: .scale(scale: 0.94)))
             }
 
-            // Floating Toast Pill
+            // Floating Toast Pill (clears the bottom Liquid Glass bar cleanly)
             if let toast = viewModel.toastMessage {
                 VStack {
                     Spacer()
@@ -73,7 +80,7 @@ struct StudioView: View {
                         .padding(.vertical, 10)
                         .liquidGlassCapsule(interactive: false)
                         .shadow(color: .black.opacity(0.18), radius: 10, y: 4)
-                        .padding(.bottom, 22)
+                        .padding(.bottom, viewModel.hasImage ? 76 : 24)
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .allowsHitTesting(false)
@@ -111,7 +118,7 @@ struct StudioView: View {
         .sheet(isPresented: $viewModel.showSheetPreview) {
             SheetPreviewView(viewModel: viewModel)
                 .preferredColorScheme(themeManager.appearance.preferredColorScheme)
-                .tint(themeManager.primaryAccent)
+                .tint(activeAccent)
         }
         .sheet(isPresented: $showSettings) {
             SettingsSheet(viewModel: viewModel)
@@ -128,11 +135,37 @@ struct StudioView: View {
 
     private var topHeaderBar: some View {
         HStack(spacing: 10) {
-            HStack(spacing: 9) {
-                PosterMarkView(size: 30)
-                Text("PosterCut")
-                    .font(.title3.weight(.bold))
+            if viewModel.hasImage {
+                // Back button to return cleanly to the Welcome / Home screen
+                Button {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    withAnimation(.spring(response: 0.30, dampingFraction: 0.86)) {
+                        viewModel.closeProject()
+                    }
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(.primary)
+                        .frame(width: 38, height: 38)
+                        .liquidGlassCircle(interactive: true)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(L10n.tr("tip_back_home"))
+
+                HStack(spacing: 8) {
+                    PosterMarkView(size: 28)
+                    Text(verbatim: "PosterCut")
+                        .font(.headline.weight(.bold))
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+                }
+            } else {
+                // Voice Notes–style Large Bold Title on Home Screen (no duplicate mini icon)
+                Text(verbatim: "PosterCut")
+                    .font(.largeTitle.weight(.bold))
                     .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
 
             Spacer(minLength: 8)
@@ -157,7 +190,7 @@ struct StudioView: View {
                         .font(.system(size: 15, weight: .bold))
                         .foregroundStyle(.white)
                         .frame(width: 38, height: 38)
-                        .liquidGlassCircle(tint: themeManager.primaryAccent, interactive: true)
+                        .liquidGlassCircle(tint: activeAccent, interactive: true)
                 }
                 .buttonStyle(.plain)
                 .disabled(viewModel.isExporting)
@@ -181,9 +214,14 @@ struct StudioView: View {
     // MARK: - Welcome Empty State
 
     private var welcomeEmptyState: some View {
-        ScrollView(showsIndicators: false) {
+        let isColorful = themeManager.currentTheme == .colorful
+        let filesTint = isColorful ? Color(hex: "#06B6D4") : themeManager.primaryAccent
+        let pasteTint = isColorful ? Color(hex: "#8B5CF6") : themeManager.primaryAccent
+        let urlTint = isColorful ? Color(hex: "#10B981") : themeManager.primaryAccent
+
+        return ScrollView(showsIndicators: false) {
             VStack(spacing: 22) {
-                Spacer(minLength: 24)
+                Spacer(minLength: 20)
 
                 VStack(spacing: 16) {
                     PosterMarkView(size: 86)
@@ -201,7 +239,7 @@ struct StudioView: View {
                     }
                     .padding(.horizontal, 8)
 
-                    // Primary Photos CTA
+                    // Primary Photos CTA (hero Liquid Glass capsule)
                     Button {
                         showPhotosPicker = true
                     } label: {
@@ -219,15 +257,15 @@ struct StudioView: View {
                     .buttonStyle(.plain)
                     .padding(.top, 4)
 
-                    // Secondary Quick Sources
+                    // Secondary Quick Sources (crisp lightweight tiles)
                     HStack(spacing: 10) {
-                        quickSourceTile(icon: "folder.fill", title: L10n.tr("ios_from_files")) {
+                        quickSourceTile(icon: "folder.fill", title: L10n.tr("ios_from_files"), tint: filesTint) {
                             showFileImporter = true
                         }
-                        quickSourceTile(icon: "doc.on.clipboard.fill", title: L10n.tr("btn_paste_clipboard")) {
+                        quickSourceTile(icon: "doc.on.clipboard.fill", title: L10n.tr("btn_paste_clipboard"), tint: pasteTint) {
                             viewModel.pasteFromClipboard()
                         }
-                        quickSourceTile(icon: "link", title: L10n.tr("btn_from_url")) {
+                        quickSourceTile(icon: "link", title: L10n.tr("btn_from_url"), tint: urlTint) {
                             showURLAlert = true
                         }
                     }
@@ -257,12 +295,12 @@ struct StudioView: View {
         }
     }
 
-    private func quickSourceTile(icon: String, title: String, action: @escaping () -> Void) -> some View {
+    private func quickSourceTile(icon: String, title: String, tint: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             VStack(spacing: 6) {
                 Image(systemName: icon)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(themeManager.primaryAccent)
+                    .foregroundStyle(tint)
                 Text(title)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.primary)
@@ -271,7 +309,11 @@ struct StudioView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .liquidGlassRoundedRect(cornerRadius: 16, interactive: true)
+            .background(Color(uiColor: .tertiarySystemFill), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .strokeBorder(tint.opacity(0.18), lineWidth: 0.75)
+            )
         }
         .buttonStyle(.plain)
     }
@@ -282,9 +324,9 @@ struct StudioView: View {
         ZStack {
             PosterCanvasView(viewModel: viewModel)
                 .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                .liquidGlassRoundedRect(cornerRadius: 24, interactive: false)
+                .studioCardSurface(cornerRadius: 24)
 
-            // Top floating canvas toolbar pill
+            // Top floating canvas toolbar pills (true Liquid Glass chrome)
             VStack {
                 HStack(spacing: 6) {
                     if viewModel.isCropMode {
@@ -302,7 +344,7 @@ struct StudioView: View {
                             .foregroundStyle(.white)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 7)
-                            .liquidGlassCapsule(tint: themeManager.primaryAccent, interactive: true)
+                            .liquidGlassCapsule(tint: activeAccent, interactive: true)
                         }
                         .buttonStyle(.plain)
                     } else {
@@ -311,14 +353,18 @@ struct StudioView: View {
                             isActive: viewModel.config.showSilhouette,
                             tooltip: L10n.tr("tip_toggle_human")
                         ) {
-                            viewModel.config.showSilhouette.toggle()
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                            withAnimation(.spring(response: 0.34, dampingFraction: 0.84)) {
+                                viewModel.config.showSilhouette.toggle()
+                            }
                         }
 
                         canvasPillToggle(
-                            icon: "grid",
+                            icon: "rectangle.split.2x2",
                             isActive: viewModel.config.showGrid,
                             tooltip: L10n.tr("tip_toggle_grid")
                         ) {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
                             viewModel.config.showGrid.toggle()
                         }
 
@@ -328,6 +374,7 @@ struct StudioView: View {
                                 isActive: viewModel.config.showOriginal,
                                 tooltip: L10n.tr("tip_compare_original")
                             ) {
+                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                                 viewModel.config.showOriginal.toggle()
                                 viewModel.refreshGeometryAndPreview(immediate: true)
                             }
@@ -354,7 +401,7 @@ struct StudioView: View {
                 .font(.system(size: 13, weight: .bold))
                 .foregroundStyle(isActive ? .white : .primary)
                 .frame(width: 32, height: 32)
-                .liquidGlassCircle(tint: isActive ? themeManager.primaryAccent : nil, interactive: true)
+                .liquidGlassCircle(tint: isActive ? activeAccent : nil, interactive: true)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(tooltip)
@@ -376,7 +423,7 @@ struct StudioView: View {
 
             Text("\(geom.activeSheets) \(L10n.tr("lbl_sheets_word"))")
                 .font(.system(size: 11, weight: .bold).monospacedDigit())
-                .foregroundStyle(themeManager.primaryAccent)
+                .foregroundStyle(activeAccent)
 
             if !viewModel.config.style.isHalftone {
                 Text("\(Int(geom.effectiveDPI.rounded()))")
@@ -395,56 +442,30 @@ struct StudioView: View {
     private func colorForDPIRating(_ rating: DPIRating) -> Color {
         switch rating {
         case .excellent: return Color(uiColor: .systemGreen)
-        case .good: return themeManager.primaryAccent
+        case .good: return activeAccent
         case .medium: return Color(uiColor: .systemYellow)
         case .low: return Color(uiColor: .systemRed)
         }
     }
 
-    // MARK: - Bottom / Side Inspector Container
+    // MARK: - Inspector Container (Soft Edge-Fade ScrollView + Bottom Native iOS 26 Liquid Glass Bar)
 
     private var inspectorContainer: some View {
-        VStack(spacing: 10) {
-            // 4-Step Floating Liquid Glass Bar
-            HStack(spacing: 4) {
-                ForEach(StudioStep.allCases) { step in
-                    let isSelected = viewModel.currentStep == step
-                    Button {
-                        withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
-                            viewModel.currentStep = step
-                            if step != .image && viewModel.isCropMode {
-                                viewModel.setCropMode(false)
-                            }
-                        }
-                    } label: {
-                        HStack(spacing: 5) {
-                            Image(systemName: step.systemIcon)
-                                .font(.system(size: 12, weight: .bold))
-                            Text(L10n.tr(step.titleKey))
-                                .font(.caption.weight(.bold))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.75)
-                        }
-                        .foregroundStyle(isSelected ? .white : .secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 9)
-                        .padding(.horizontal, 4)
-                        .background(
-                            Group {
-                                if isSelected {
-                                    Capsule()
-                                        .fill(themeManager.primaryAccent)
-                                }
-                            }
-                        )
+        let stepBinding = Binding<StudioStep>(
+            get: { viewModel.currentStep },
+            set: { newStep in
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
+                    viewModel.currentStep = newStep
+                    if newStep != .image && viewModel.isCropMode {
+                        viewModel.setCropMode(false)
                     }
-                    .buttonStyle(.plain)
                 }
             }
-            .padding(4)
-            .liquidGlassCapsule(interactive: false)
+        )
 
-            // Scrollable Controls for Selected Step
+        return ZStack(alignment: .bottom) {
+            // Scrollable controls with soft top & bottom gradient fade mask
             ScrollView(showsIndicators: false) {
                 StepControlsView(
                     viewModel: viewModel,
@@ -452,8 +473,43 @@ struct StudioView: View {
                     onPickFiles: { showFileImporter = true },
                     onPromptURL: { showURLAlert = true }
                 )
-                .padding(.bottom, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 76)
             }
+            .mask(
+                VStack(spacing: 0) {
+                    LinearGradient(
+                        colors: [.clear, .black],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .frame(height: 18)
+
+                    Color.black
+
+                    LinearGradient(
+                        colors: [.black, .clear],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .frame(height: 54)
+                }
+            )
+
+            // Bottom Floating Native iOS 26 Liquid Glass Step Switcher
+            // Uses Apple's native segmented Picker for genuine magnifying Liquid Glass droplet physics
+            Picker("", selection: stepBinding) {
+                ForEach(StudioStep.allCases) { step in
+                    Text(L10n.tr(step.titleKey))
+                        .tag(step)
+                }
+            }
+            .pickerStyle(.segmented)
+            .controlSize(.large)
+            .labelsHidden()
+            .shadow(color: Color.black.opacity(0.14), radius: 12, y: 4)
+            .padding(.horizontal, 4)
+            .padding(.bottom, 4)
         }
     }
 
@@ -467,7 +523,7 @@ struct StudioView: View {
             VStack(spacing: 14) {
                 ProgressView(value: viewModel.exportProgress, total: 1.0)
                     .progressViewStyle(.linear)
-                    .tint(themeManager.primaryAccent)
+                    .tint(activeAccent)
                     .frame(width: 210)
 
                 Text(viewModel.exportStatusText)
